@@ -1,5 +1,6 @@
 package com.example.bookworm.backend.config;
 
+import com.example.bookworm.backend.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -14,34 +15,34 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
-@EnableWebSecurity
 public class SecurityConfig {
-
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable) // Disable CSRF for simplicity
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/**").authenticated() // Require authentication for all /api/** endpoints
-                        .anyRequest().permitAll()
-                )
-                .httpBasic(Customizer.withDefaults()); // Use basic authentication
-
-        return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("admin")
-                .password(passwordEncoder().encode("admin123"))
-                .roles("USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/api/books").hasRole("ADMIN")
+                        .requestMatchers("/api/books/**").hasRole("ADMIN")
+                        .requestMatchers("/api/users").permitAll() // Allow anyone to create users
+                        .requestMatchers("/api/users/assign-role").hasRole("ADMIN")
+                        .requestMatchers("/api/users/{id}").hasRole("ADMIN")
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(withDefaults());
+        return http.build();
     }
 }
