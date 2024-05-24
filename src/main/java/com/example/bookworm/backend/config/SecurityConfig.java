@@ -3,6 +3,7 @@ package com.example.bookworm.backend.config;
 import com.example.bookworm.backend.service.CustomUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -35,14 +36,17 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/books").hasRole("ADMIN")
-                        .requestMatchers("/api/books/**").hasRole("ADMIN")
-                        .requestMatchers("/api/users").permitAll() // Allow anyone to create users
-                        .requestMatchers("/api/users/assign-role").hasRole("ADMIN")
-                        .requestMatchers("/api/users/{id}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll()  // Allow anyone to create a user
+                        .requestMatchers(HttpMethod.POST, "/api/books").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/books/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/users/assign-role").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/books").permitAll()  // Allow any authenticated user to access this endpoint
                         .anyRequest().authenticated()
                 )
                 .httpBasic(withDefaults());
         return http.build();
     }
 }
+
+

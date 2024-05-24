@@ -49,7 +49,6 @@ public class BookController {
         return ResponseEntity.noContent().build();
     }
 
-
     @GetMapping("/isbn/{isbn}")
     public ResponseEntity<Book> getBookByIsbn(@PathVariable String isbn) {
         return bookService.getBookByIsbn(isbn)
@@ -57,3 +56,4 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 }
+

@@ -1,5 +1,6 @@
 package com.example.bookworm.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -31,7 +32,7 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
-    @JsonManagedReference
+    @JsonIgnore
     private Set<Role> roles = new HashSet<>();
 
     // Constructors
