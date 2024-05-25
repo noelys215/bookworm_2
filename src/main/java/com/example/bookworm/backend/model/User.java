@@ -63,4 +63,11 @@ public class User extends Person {
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
+
+
+    /* Polymorphism */
+    @Override
+    public void displayInfo() {
+        System.out.println("User Name: " + getName() + ", Email: " + getEmail() + ", Roles: " + roles);
+    }
 }

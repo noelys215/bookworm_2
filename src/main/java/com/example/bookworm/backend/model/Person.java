@@ -38,6 +38,7 @@ public abstract class Person {
         this.email = email;
     }
 
+    /* Polymorphism */
     public void displayInfo() {
         System.out.println("Person Name: " + name + ", Email: " + email);
     }
