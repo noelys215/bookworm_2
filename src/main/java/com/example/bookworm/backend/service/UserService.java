@@ -38,6 +38,10 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already registered: " + user.getEmail());
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Set<Role> roles = new HashSet<>();
@@ -49,6 +53,10 @@ public class UserService {
     }
 
     public User createAdminUser(User user) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email is already registered: " + user.getEmail());
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
         Set<Role> roles = new HashSet<>();
@@ -88,3 +96,4 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 }
+

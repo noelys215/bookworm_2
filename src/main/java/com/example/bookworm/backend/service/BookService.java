@@ -24,7 +24,14 @@ public class BookService {
     }
 
     public Book createBook(Book book) {
-        return bookRepository.save(book);
+        Optional<Book> existingBook = bookRepository.findByIsbn(book.getIsbn());
+        if (existingBook.isPresent()) {
+            Book bookToUpdate = existingBook.get();
+            bookToUpdate.setQuantity(bookToUpdate.getQuantity() + book.getQuantity());
+            return bookRepository.save(bookToUpdate);
+        } else {
+            return bookRepository.save(book);
+        }
     }
 
     public Book updateBook(Long id, Book bookDetails) {
@@ -33,8 +40,8 @@ public class BookService {
         book.setAuthor(bookDetails.getAuthor());
         book.setIsbn(bookDetails.getIsbn());
         book.setQuantity(bookDetails.getQuantity());
-        book.setYear(bookDetails.getYear());
         book.setGenre(bookDetails.getGenre());
+        book.setYear(bookDetails.getYear());
         book.setLostQuantity(bookDetails.getLostQuantity());
         return bookRepository.save(book);
     }
@@ -48,16 +55,17 @@ public class BookService {
         return bookRepository.findByIsbn(isbn);
     }
 
-    public List<Book> getBooksByGenre(String genre) {
-        return bookRepository.findByGenre(genre);
+
+    public List<Book> getBooksByAuthor(String author) {
+        return bookRepository.findByAuthor(author);
     }
 
     public List<Book> getBooksByTitle(String title) {
-        return bookRepository.findByTitleContainingIgnoreCase(title);
+        return bookRepository.findByTitle(title);
     }
 
-    public List<Book> getBooksByAuthor(String author) {
-        return bookRepository.findByAuthorContainingIgnoreCase(author);
+    public List<Book> getBooksByGenre(String genre) {
+        return bookRepository.findByGenre(genre);
     }
 
     public void decrementQuantity(Long bookId) {
