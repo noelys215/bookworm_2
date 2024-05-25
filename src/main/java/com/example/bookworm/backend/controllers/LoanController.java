@@ -1,5 +1,6 @@
 package com.example.bookworm.backend.controllers;
 
+import com.example.bookworm.backend.dto.LoanRequest;
 import com.example.bookworm.backend.model.Loan;
 import com.example.bookworm.backend.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,16 +33,15 @@ public class LoanController {
 
     @PostMapping
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Loan> createLoan(@RequestParam Long bookId, Principal principal) {
-        String userEmail = principal.getName(); // Get the authenticated user's email
-        Loan createdLoan = loanService.createLoan(bookId, userEmail);
-        return ResponseEntity.ok(createdLoan);
+    public ResponseEntity<Loan> createLoan(@RequestBody LoanRequest loanRequest, Principal principal) {
+        Loan loan = loanService.createLoan(loanRequest.getBookId(), principal.getName());
+        return ResponseEntity.ok(loan);
     }
 
-    @PutMapping("/return/{id}")
+    @PutMapping("/return/{loanId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Loan> returnLoan(@PathVariable Long id) {
-        Loan returnedLoan = loanService.returnLoan(id);
+    public ResponseEntity<Loan> returnLoan(@PathVariable Long loanId) {
+        Loan returnedLoan = loanService.returnLoan(loanId);
         return ResponseEntity.ok(returnedLoan);
     }
 
@@ -65,4 +65,6 @@ public class LoanController {
         return loanService.getActiveLoans();
     }
 }
+
+
 

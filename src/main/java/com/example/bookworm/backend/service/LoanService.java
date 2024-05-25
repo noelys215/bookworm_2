@@ -1,6 +1,7 @@
 package com.example.bookworm.backend.service;
 
 import com.example.bookworm.backend.exception.BookNotFoundException;
+import com.example.bookworm.backend.exception.LoanNotFoundException;
 import com.example.bookworm.backend.exception.UserNotFoundException;
 import com.example.bookworm.backend.model.Book;
 import com.example.bookworm.backend.model.Loan;
@@ -31,7 +32,7 @@ public class LoanService {
     }
 
     public Loan getLoanById(Long id) {
-        return loanRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Loan not found with id: " + id));
+        return loanRepository.findById(id).orElseThrow(() -> new LoanNotFoundException("Loan not found with id: " + id));
     }
 
     public Loan createLoan(Long bookId, String userEmail) {
@@ -46,7 +47,8 @@ public class LoanService {
         loan.setBook(book);
         loan.setUser(user);
         loan.setLoanDate(LocalDate.now());
-        loan.setReturnDate(null);
+        loan.setReturnDate(null);  // Ensure returnDate is null when creating a loan
+        loan.setLost(false);  // Set default value for 'lost'
 
         book.setQuantity(book.getQuantity() - 1);
         bookRepository.save(book);
@@ -54,8 +56,8 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
-    public Loan returnLoan(Long id) {
-        Loan loan = getLoanById(id);
+    public Loan returnLoan(Long loanId) {
+        Loan loan = getLoanById(loanId);
         loan.setReturnDate(LocalDate.now());
 
         Book book = loan.getBook();
@@ -73,6 +75,7 @@ public class LoanService {
         book.setLostQuantity(book.getLostQuantity() + 1);
         bookRepository.save(book);
 
+        loan.setLost(true);
         return loanRepository.save(loan);
     }
 

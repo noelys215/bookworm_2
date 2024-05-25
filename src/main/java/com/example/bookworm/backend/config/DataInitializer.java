@@ -4,6 +4,7 @@ import com.example.bookworm.backend.model.Book;
 import com.example.bookworm.backend.model.Role;
 import com.example.bookworm.backend.model.User;
 import com.example.bookworm.backend.repository.BookRepository;
+import com.example.bookworm.backend.repository.LoanRepository;
 import com.example.bookworm.backend.repository.RoleRepository;
 import com.example.bookworm.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,23 +30,31 @@ public class DataInitializer implements CommandLineRunner {
     private BookRepository bookRepository;
 
     @Autowired
+    private LoanRepository loanRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
-        /* Overwrite existing data */
+        // Delete all loans first to avoid foreign key constraint issues
+        loanRepository.deleteAll();
+
+        // Then delete all users
         userRepository.deleteAll();
+
+        // Also delete roles and books
         roleRepository.deleteAll();
         bookRepository.deleteAll();
 
-        /* Create roles */
+        // Create roles
         Role adminRole = new Role();
         adminRole.setName("ROLE_ADMIN");
         Role userRole = new Role();
         userRole.setName("ROLE_USER");
         roleRepository.saveAll(List.of(adminRole, userRole));
 
-        /* Create users */
+        // Create users
         User admin = new User("Admin", "admin@example.com", passwordEncoder.encode("admin123"));
         admin.setRoles(new HashSet<>(Set.of(adminRole, userRole)));
 
@@ -54,7 +63,7 @@ public class DataInitializer implements CommandLineRunner {
 
         userRepository.saveAll(List.of(admin, regularUser));
 
-        /* Create books */
+        // Create books
         List<Book> books = List.of(
                 new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565", 10, 0, 1925, "Fiction", LocalDateTime.now(), LocalDateTime.now()),
                 new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084", 10, 0, 1960, "Fiction", LocalDateTime.now(), LocalDateTime.now()),
@@ -101,9 +110,6 @@ public class DataInitializer implements CommandLineRunner {
                 new Book("The Goldfinch", "Donna Tartt", "9780316055437", 10, 0, 2013, "Fiction", LocalDateTime.now(), LocalDateTime.now()),
                 new Book("The Night Circus", "Erin Morgenstern", "9780307744432", 10, 0, 2011, "Fantasy", LocalDateTime.now(), LocalDateTime.now()),
                 new Book("The Martian", "Andy Weir", "9780553418026", 10, 0, 2011, "Science Fiction", LocalDateTime.now(), LocalDateTime.now())
-
-
-
         );
 
         bookRepository.saveAll(books);

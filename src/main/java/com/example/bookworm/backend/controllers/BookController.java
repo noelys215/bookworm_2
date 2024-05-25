@@ -56,9 +56,9 @@ public class BookController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/genre/{genre}")
-    public ResponseEntity<List<Book>> getBooksByGenre(@PathVariable String genre) {
-        List<Book> books = bookService.getBooksByGenre(genre);
+    @GetMapping("/author/{author}")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable String author) {
+        List<Book> books = bookService.getBooksByAuthor(author);
         return ResponseEntity.ok(books);
     }
 
@@ -68,10 +68,9 @@ public class BookController {
         return ResponseEntity.ok(books);
     }
 
-
-    @GetMapping("/author/{author}")
-    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable String author) {
-        List<Book> books = bookService.getBooksByAuthor(author);
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<Book>> getBooksByGenre(@PathVariable String genre) {
+        List<Book> books = bookService.getBooksByGenre(genre);
         return ResponseEntity.ok(books);
     }
 }
