@@ -55,5 +55,26 @@ public class BookController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @GetMapping("/genre/{genre}")
+    public ResponseEntity<List<Book>> getBooksByGenre(@PathVariable String genre) {
+        List<Book> books = bookService.getBooksByGenre(genre);
+        return ResponseEntity.ok(books);
+    }
+
+    @GetMapping("/title/{title}")
+    public ResponseEntity<List<Book>> getBooksByTitle(@PathVariable String title) {
+        List<Book> books = bookService.getBooksByTitle(title);
+        return ResponseEntity.ok(books);
+    }
+
+
+    @GetMapping("/author/{author}")
+    public ResponseEntity<List<Book>> getBooksByAuthor(@PathVariable String author) {
+        List<Book> books = bookService.getBooksByAuthor(author);
+        return ResponseEntity.ok(books);
+    }
 }
+
+
 

@@ -31,6 +31,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
@@ -63,3 +64,4 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 }
+

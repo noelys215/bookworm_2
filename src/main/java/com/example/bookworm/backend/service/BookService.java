@@ -33,6 +33,9 @@ public class BookService {
         book.setAuthor(bookDetails.getAuthor());
         book.setIsbn(bookDetails.getIsbn());
         book.setQuantity(bookDetails.getQuantity());
+        book.setYear(bookDetails.getYear());
+        book.setGenre(bookDetails.getGenre());
+        book.setLostQuantity(bookDetails.getLostQuantity());
         return bookRepository.save(book);
     }
 
@@ -45,6 +48,17 @@ public class BookService {
         return bookRepository.findByIsbn(isbn);
     }
 
+    public List<Book> getBooksByGenre(String genre) {
+        return bookRepository.findByGenre(genre);
+    }
+
+    public List<Book> getBooksByTitle(String title) {
+        return bookRepository.findByTitleContainingIgnoreCase(title);
+    }
+
+    public List<Book> getBooksByAuthor(String author) {
+        return bookRepository.findByAuthorContainingIgnoreCase(author);
+    }
 
     public void decrementQuantity(Long bookId) {
         Book book = bookRepository.findById(bookId)
@@ -71,3 +85,4 @@ public class BookService {
         bookRepository.save(book);
     }
 }
+

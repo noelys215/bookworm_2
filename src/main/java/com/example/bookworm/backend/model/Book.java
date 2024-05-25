@@ -29,6 +29,9 @@ public class Book {
     @Column(nullable = false)
     private int lostQuantity;
 
+    @Column(nullable = false)
+    private String genre;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -41,13 +44,14 @@ public class Book {
 
     public Book(
             String title, String author, String isbn, int quantity, int lostQuantity,
-            int year, LocalDateTime createdAt, LocalDateTime updatedAt) {
+            int year, String genre, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.quantity = quantity;
         this.lostQuantity = lostQuantity;
         this.year = year;
+        this.genre = genre;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -107,6 +111,14 @@ public class Book {
 
     public void setLostQuantity(int lostQuantity) {
         this.lostQuantity = lostQuantity;
+    }
+
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
     }
 
     public LocalDateTime getCreatedAt() {

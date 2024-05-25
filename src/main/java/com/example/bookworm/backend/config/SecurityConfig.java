@@ -119,6 +119,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/loans/return/**").authenticated()
                         .requestMatchers(HttpMethod.PUT, "/api/loans/mark-lost/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/loans/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")  // Ensure only admins can access the users endpoint
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -155,6 +156,7 @@ public class SecurityConfig {
         };
     }
 }
+
 
 
 
