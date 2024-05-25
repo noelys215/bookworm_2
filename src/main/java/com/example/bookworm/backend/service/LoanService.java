@@ -34,9 +34,9 @@ public class LoanService {
         return loanRepository.findById(id).orElseThrow(() -> new BookNotFoundException("Loan not found with id: " + id));
     }
 
-    public Loan createLoan(Long bookId, Long userId) {
+    public Loan createLoan(Long bookId, String userEmail) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("User not found with id: " + userId));
+        User user = userRepository.findByEmail(userEmail).orElseThrow(() -> new UserNotFoundException("User not found with email: " + userEmail));
 
         if (book.getQuantity() <= 0) {
             throw new RuntimeException("No copies available for loan");
@@ -65,6 +65,17 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
+    public Loan markLoanAsLost(Long id) {
+        Loan loan = getLoanById(id);
+        loan.setReturnDate(LocalDate.now());
+
+        Book book = loan.getBook();
+        book.setLostQuantity(book.getLostQuantity() + 1);
+        bookRepository.save(book);
+
+        return loanRepository.save(loan);
+    }
+
     public void deleteLoan(Long id) {
         Loan loan = getLoanById(id);
         loanRepository.delete(loan);
@@ -74,3 +85,6 @@ public class LoanService {
         return loanRepository.findByReturnDateIsNull();
     }
 }
+
+
+

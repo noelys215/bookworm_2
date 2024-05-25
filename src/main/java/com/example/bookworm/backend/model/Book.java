@@ -1,7 +1,6 @@
 package com.example.bookworm.backend.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,11 +11,23 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String author;
+
+    @Column(nullable = false)
     private String isbn;
+
+    @Column(nullable = false)
     private int quantity;
+
+    @Column(nullable = false)
     private int year;
+
+    @Column(nullable = false)
+    private int lostQuantity;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -28,12 +39,17 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, String author, String isbn, int quantity, int year) {
+    public Book(
+            String title, String author, String isbn, int quantity, int lostQuantity,
+            int year, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
         this.quantity = quantity;
+        this.lostQuantity = lostQuantity;
         this.year = year;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
 
     // Getters and Setters
@@ -83,6 +99,14 @@ public class Book {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public int getLostQuantity() {
+        return lostQuantity;
+    }
+
+    public void setLostQuantity(int lostQuantity) {
+        this.lostQuantity = lostQuantity;
     }
 
     public LocalDateTime getCreatedAt() {

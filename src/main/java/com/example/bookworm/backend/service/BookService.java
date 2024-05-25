@@ -44,4 +44,30 @@ public class BookService {
     public Optional<Book> getBookByIsbn(String isbn) {
         return bookRepository.findByIsbn(isbn);
     }
+
+
+    public void decrementQuantity(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
+        if (book.getQuantity() > 0) {
+            book.setQuantity(book.getQuantity() - 1);
+            bookRepository.save(book);
+        } else {
+            throw new RuntimeException("No more copies available");
+        }
+    }
+
+    public void incrementQuantity(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
+        book.setQuantity(book.getQuantity() + 1);
+        bookRepository.save(book);
+    }
+
+    public void incrementLostQuantity(Long bookId) {
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException("Book not found with id: " + bookId));
+        book.setLostQuantity(book.getLostQuantity() + 1);
+        bookRepository.save(book);
+    }
 }
