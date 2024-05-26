@@ -37,9 +37,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, CustomUserDetailsService userDetailsService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(HttpMethod.POST, "/api/users").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/books").hasRole("ADMIN")
@@ -55,12 +55,14 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/loans/mark-lost/**").authenticated()
                         .requestMatchers(HttpMethod.DELETE, "/api/loans/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.PUT, "/api/users/me").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/users/me/loans").authenticated()
                         .requestMatchers(HttpMethod.POST, "/login").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/reports/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginProcessingUrl("/login")
+                        .loginPage("/login")
                         .successHandler(loginSuccessHandler())
                         .failureHandler(loginFailureHandler())
                         .permitAll()
@@ -76,9 +78,7 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint(authenticationEntryPoint())
-                )
-                .userDetailsService(userDetailsService);  // Add userDetailsService directly here
-
+                );
         return http.build();
     }
 
