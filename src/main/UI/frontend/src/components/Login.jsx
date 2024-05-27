@@ -25,7 +25,14 @@ const Login = () => {
 			});
 
 			if (response.status === 200) {
-				navigate('/dashboard');
+				// Fetch user details to get roles
+				const userResponse = await axios.get('/api/users/me');
+				const roles = userResponse.data.roles;
+				if (roles.includes('ROLE_ADMIN')) {
+					navigate('/admin-dashboard');
+				} else {
+					navigate('/dashboard');
+				}
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {

@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -62,10 +63,10 @@ public class UserService {
 
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new IllegalArgumentException("Role not found: ROLE_USER")));
-        roles.add(roleRepository.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new IllegalArgumentException("Role not found: ROLE_ADMIN")));
-        user.setRoles(roles);
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: 'ROLE_USER")));
+                        roles.add(roleRepository.findByName("ROLE_ADMIN")
+                                .orElseThrow(() -> new IllegalArgumentException("Role not found: 'ROLE_ADMIN")));
+                                        user.setRoles(roles);
 
         return userRepository.save(user);
     }
@@ -97,23 +98,27 @@ public class UserService {
         return userRepository.findByEmail(email);
     }
 
-    // Highlighted: Method to get user details without password
+    // Highlighted: Method to get user details
     public UserDto getUserDetails(String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        return new UserDto(user.getId(), user.getName(), user.getEmail());
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+        Set<String> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()); // Get role names
+        return new UserDto(user.getId(), user.getName(), user.getEmail(), roles); // Updated constructor call
     }
 
     // Highlighted: Method to update user details (name and email)
-    public void updateUserDetails(UserDto userDto, String email) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
+    public void updateUserDetails(UserDto updatedUserDto, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+        user.setName(updatedUserDto.getName());
+        user.setEmail(updatedUserDto.getEmail());
         userRepository.save(user);
     }
 
     // Highlighted: Method to update user password
     public void updateUserPassword(String email, String newPassword) {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
     }
