@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import axios from '../utils/axiosConfig.js';
 import qs from 'qs';
 
 const Login = () => {
@@ -18,15 +18,14 @@ const Login = () => {
 		});
 
 		try {
-			const response = await axios.post('http://localhost:8080/login', data, {
+			const response = await axios.post('/login', data, {
 				headers: {
 					'Content-Type': 'application/x-www-form-urlencoded',
 				},
 			});
 
 			if (response.status === 200) {
-				// Redirect to the home page on successful login
-				navigate('/home');
+				navigate('/dashboard');
 			}
 		} catch (error) {
 			if (error.response && error.response.status === 401) {

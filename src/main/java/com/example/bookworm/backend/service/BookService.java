@@ -3,6 +3,8 @@ package com.example.bookworm.backend.service;
 import com.example.bookworm.backend.exception.BookNotFoundException;
 import com.example.bookworm.backend.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import com.example.bookworm.backend.model.Book;
 
@@ -15,8 +17,9 @@ public class BookService {
     @Autowired
     private BookRepository bookRepository;
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    // Highlighted: Changed method signature to support pagination
+    public Page<Book> getAllBooks(Pageable pageable) {
+        return bookRepository.findAll(pageable);
     }
 
     public Book getBookById(Long id) {
@@ -55,17 +58,16 @@ public class BookService {
         return bookRepository.findByIsbn(isbn);
     }
 
-
     public List<Book> getBooksByAuthor(String author) {
-        return bookRepository.findByAuthor(author);
+        return bookRepository.findByAuthorContainingIgnoreCase(author);
     }
 
     public List<Book> getBooksByTitle(String title) {
-        return bookRepository.findByTitle(title);
+        return bookRepository.findByTitleContainingIgnoreCase(title);
     }
 
     public List<Book> getBooksByGenre(String genre) {
-        return bookRepository.findByGenre(genre);
+        return bookRepository.findByGenreContainingIgnoreCase(genre);
     }
 
     public void decrementQuantity(Long bookId) {
@@ -92,5 +94,11 @@ public class BookService {
         book.setLostQuantity(book.getLostQuantity() + 1);
         bookRepository.save(book);
     }
+
+    // Highlighted: Added search method
+    public List<Book> searchBooks(String query) {
+        return bookRepository.findByTitleContainingOrAuthorContainingOrGenreContainingIgnoreCase(query, query, query);
+    }
+
 }
 

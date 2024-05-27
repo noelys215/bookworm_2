@@ -1,11 +1,14 @@
 package com.example.bookworm.backend.controllers;
 
 import com.example.bookworm.backend.model.Book;
-import com.example.bookworm.backend.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import com.example.bookworm.backend.service.BookService;
 
 import java.util.List;
 
@@ -23,9 +26,13 @@ public class BookController {
         return ResponseEntity.ok(createdBook);
     }
 
+    // Highlighted: Changed return type to Page<Book> and added Pageable parameter
     @GetMapping
-    public ResponseEntity<List<Book>> getAllBooks() {
-        List<Book> books = bookService.getAllBooks();
+    public ResponseEntity<Page<Book>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Book> books = bookService.getAllBooks(pageable);
         return ResponseEntity.ok(books);
     }
 
@@ -71,6 +78,13 @@ public class BookController {
     @GetMapping("/genre/{genre}")
     public ResponseEntity<List<Book>> getBooksByGenre(@PathVariable String genre) {
         List<Book> books = bookService.getBooksByGenre(genre);
+        return ResponseEntity.ok(books);
+    }
+
+    // Highlighted: Added search endpoint
+    @GetMapping("/search")
+    public ResponseEntity<List<Book>> searchBooks(@RequestParam String query) {
+        List<Book> books = bookService.searchBooks(query);
         return ResponseEntity.ok(books);
     }
 }
