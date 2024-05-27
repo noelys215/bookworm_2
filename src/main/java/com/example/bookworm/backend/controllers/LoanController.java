@@ -40,8 +40,8 @@ public class LoanController {
 
     @PutMapping("/return/{loanId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Loan> returnLoan(@PathVariable Long loanId) {
-        Loan returnedLoan = loanService.returnLoan(loanId);
+    public ResponseEntity<Loan> returnLoan(@PathVariable Long loanId, Principal principal) {
+        Loan returnedLoan = loanService.returnLoan(loanId, principal.getName());
         return ResponseEntity.ok(returnedLoan);
     }
 
@@ -64,6 +64,10 @@ public class LoanController {
     public List<Loan> getActiveLoans() {
         return loanService.getActiveLoans();
     }
+
+
+
+
 }
 
 

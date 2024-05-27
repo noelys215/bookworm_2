@@ -17,8 +17,14 @@ const getUserLoans = async () => {
 	return response.data;
 };
 
+const updateUserPassword = async (newPassword) => {
+	const response = await axiosConfig.put(`${API_URL}/me/password`, { newPassword });
+	return response.data;
+};
+
 export default {
 	getUserDetails,
 	updateUserDetails,
 	getUserLoans,
+	updateUserPassword,
 };

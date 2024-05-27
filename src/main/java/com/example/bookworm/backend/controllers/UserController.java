@@ -1,6 +1,7 @@
 package com.example.bookworm.backend.controllers;
 
 import com.example.bookworm.backend.dto.RoleAssignmentRequest;
+import com.example.bookworm.backend.dto.UserDto;
 import com.example.bookworm.backend.model.Loan;
 import com.example.bookworm.backend.model.User;
 import com.example.bookworm.backend.repository.LoanRepository;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,7 +33,6 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @PostMapping("/assign-role")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
@@ -80,44 +81,44 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
-
-
-    // Method to get the authenticated user's details
+    // Highlighted: Updated method to return UserDto without password
     @GetMapping("/me")
-    public User getAuthenticatedUser() {
+    public ResponseEntity<UserDto> getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        return userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        UserDto userDto = userService.getUserDetails(email);
+        return ResponseEntity.ok(userDto);
     }
 
-    // Method to update the authenticated user's details
+    // Highlighted: Updated method to update only name and email
     @PutMapping("/me")
-    public User updateAuthenticatedUser(@RequestBody User updatedUser) {
+    public ResponseEntity<Void> updateAuthenticatedUser(@RequestBody UserDto updatedUserDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        userService.updateUserDetails(updatedUserDto, email);
+        return ResponseEntity.ok().build();
+    }
 
-        if (updatedUser.getName() != null) {
-            user.setName(updatedUser.getName());
-        }
-        if (updatedUser.getEmail() != null) {
-            user.setEmail(updatedUser.getEmail());
-        }
-        if (updatedUser.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-        }
-
-        return userRepository.save(user);
+    // Highlighted: Added method to update password separately
+    @PutMapping("/me/password")
+    public ResponseEntity<Void> updateAuthenticatedUserPassword(@RequestBody Map<String, String> passwordMap) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        String newPassword = passwordMap.get("newPassword");
+        userService.updateUserPassword(email, newPassword);
+        return ResponseEntity.ok().build();
     }
 
     // Method to get the authenticated user's loans
     @GetMapping("/me/loans")
+    @PreAuthorize("isAuthenticated()")
     public List<Loan> getAuthenticatedUserLoans() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
-        return loanRepository.findByUserId(user.getId());
+        // Filter loans to return only active ones (those without a return date)
+        return loanRepository.findByUserIdAndReturnDateIsNull(user.getId());
     }
 }
+
 

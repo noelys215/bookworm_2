@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
 import Logout from '../components/Logout';
-import axios from 'axios';
+import BackToExploreButton from '../components/BackToExploreButton';
+import axios from '../utils/axiosConfig.js';
 
 const Dashboard = () => {
 	const [userDetails, setUserDetails] = useState({});
 	const [userLoans, setUserLoans] = useState([]);
+	const [password, setPassword] = useState('');
 	const [error, setError] = useState('');
 	const navigate = useNavigate();
 
@@ -30,6 +32,10 @@ const Dashboard = () => {
 		setUserDetails({ ...userDetails, [name]: value });
 	};
 
+	const handlePasswordChange = (e) => {
+		setPassword(e.target.value);
+	};
+
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		try {
@@ -38,6 +44,17 @@ const Dashboard = () => {
 			navigate('/dashboard');
 		} catch (error) {
 			setError('Failed to update details.');
+		}
+	};
+
+	const handlePasswordSubmit = async (e) => {
+		e.preventDefault();
+		try {
+			await UserService.updateUserPassword(password);
+			alert('Password updated successfully');
+			navigate('/dashboard');
+		} catch (error) {
+			setError('Failed to update password.');
 		}
 	};
 
@@ -70,6 +87,7 @@ const Dashboard = () => {
 	return (
 		<div>
 			<h2>Dashboard</h2>
+			<BackToExploreButton />
 			<Logout />
 			{error && <p>{error}</p>}
 			<form onSubmit={handleSubmit}>
@@ -90,15 +108,19 @@ const Dashboard = () => {
 					onChange={handleChange}
 					required
 				/>
+				<button type="submit">Update Details</button>
+			</form>
+			<form onSubmit={handlePasswordSubmit}>
+				<h3>Change Password</h3>
 				<input
 					type="password"
 					name="password"
-					placeholder="Password"
-					value={userDetails.password || ''}
-					onChange={handleChange}
+					placeholder="New Password"
+					value={password}
+					onChange={handlePasswordChange}
 					required
 				/>
-				<button type="submit">Update Details</button>
+				<button type="submit">Update Password</button>
 			</form>
 			<h3>Loans</h3>
 			{userLoans.length > 0 ? (

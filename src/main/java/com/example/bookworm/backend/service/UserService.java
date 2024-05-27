@@ -1,5 +1,6 @@
 package com.example.bookworm.backend.service;
 
+import com.example.bookworm.backend.dto.UserDto;
 import com.example.bookworm.backend.exception.UserNotFoundException;
 import com.example.bookworm.backend.model.Role;
 import com.example.bookworm.backend.model.User;
@@ -94,6 +95,27 @@ public class UserService {
 
     public Optional<User> getUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    // Highlighted: Method to get user details without password
+    public UserDto getUserDetails(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        return new UserDto(user.getId(), user.getName(), user.getEmail());
+    }
+
+    // Highlighted: Method to update user details (name and email)
+    public void updateUserDetails(UserDto userDto, String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        userRepository.save(user);
+    }
+
+    // Highlighted: Method to update user password
+    public void updateUserPassword(String email, String newPassword) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
     }
 }
 

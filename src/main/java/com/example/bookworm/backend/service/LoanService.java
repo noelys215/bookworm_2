@@ -56,8 +56,11 @@ public class LoanService {
         return loanRepository.save(loan);
     }
 
-    public Loan returnLoan(Long loanId) {
+    public Loan returnLoan(Long loanId, String userEmail) {
         Loan loan = getLoanById(loanId);
+        if (!loan.getUser().getEmail().equals(userEmail)) {
+            throw new RuntimeException("You are not authorized to return this loan");
+        }
         loan.setReturnDate(LocalDate.now());
 
         Book book = loan.getBook();
@@ -87,7 +90,13 @@ public class LoanService {
     public List<Loan> getActiveLoans() {
         return loanRepository.findByReturnDateIsNull();
     }
+
+    public List<Loan> getLoansByUserEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+        return loanRepository.findByUserIdAndReturnDateIsNull(user.getId());
+    }
 }
+
 
 
 
