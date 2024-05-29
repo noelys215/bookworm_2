@@ -49,6 +49,7 @@ public class LoanService {
         loan.setLoanDate(LocalDate.now());
         loan.setReturnDate(null);  // Ensure returnDate is null when creating a loan
         loan.setLost(false);  // Set default value for 'lost'
+        loan.setLostDate(null);  // Set default value for 'lostDate'
 
         book.setQuantity(book.getQuantity() - 1);
         bookRepository.save(book);
@@ -72,13 +73,13 @@ public class LoanService {
 
     public Loan markLoanAsLost(Long id) {
         Loan loan = getLoanById(id);
-        loan.setReturnDate(LocalDate.now());
+        loan.setLost(true);
+        loan.setLostDate(LocalDate.now());  // Set lost date
 
         Book book = loan.getBook();
         book.setLostQuantity(book.getLostQuantity() + 1);
         bookRepository.save(book);
 
-        loan.setLost(true);
         return loanRepository.save(loan);
     }
 
@@ -96,7 +97,3 @@ public class LoanService {
         return loanRepository.findByUserIdAndReturnDateIsNull(user.getId());
     }
 }
-
-
-
-

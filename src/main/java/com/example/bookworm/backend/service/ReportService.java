@@ -23,8 +23,8 @@ public class ReportService {
         LocalDate endOfMonth = startOfMonth.plusMonths(1).minusDays(1);
 
         List<Loan> loans = loanRepository.findAll().stream()
-                .filter(loan -> loan.getLoanDate().isAfter(startOfMonth) && loan.getLoanDate().isBefore(endOfMonth))
-                .collect(Collectors.toList());
+                .filter(loan -> !loan.getLoanDate().isAfter(endOfMonth) && (loan.getReturnDate() == null || !loan.getReturnDate().isBefore(startOfMonth) || (loan.getLostDate() != null && !loan.getLostDate().isBefore(startOfMonth))))
+                .toList();
 
         List<LoanDetails> loanDetails = loans.stream().map(loan -> {
             LoanDetails details = new LoanDetails();
@@ -37,15 +37,25 @@ public class ReportService {
             details.setUserName(loan.getUser().getName());
             details.setUserEmail(loan.getUser().getEmail());
             return details;
-        }).collect(Collectors.toList());
+        }).toList();
 
-        long totalBooksTakenOut = loans.size();
-        long totalBooksReturned = loans.stream().filter(loan -> loan.getReturnDate() != null).count();
-        long totalBooksLost = loans.stream().filter(Loan::isLost).count();
-        long totalBooksOnLoan = loans.stream().filter(loan -> loan.getReturnDate() == null).count();
-        long totalOverdueBooks = loans.stream().filter(loan -> loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 21).count();
+        long totalBooksTakenOut = loans.stream()
+                .filter(loan -> !loan.getLoanDate().isBefore(startOfMonth) && !loan.getLoanDate().isAfter(endOfMonth))
+                .count();
+        long totalBooksReturned = loans.stream()
+                .filter(loan -> loan.getReturnDate() != null && !loan.getReturnDate().isBefore(startOfMonth) && !loan.getReturnDate().isAfter(endOfMonth))
+                .count();
+        long totalBooksLost = loans.stream()
+                .filter(loan -> loan.isLost() && (loan.getLostDate() != null && !loan.getLostDate().isBefore(startOfMonth) && !loan.getLostDate().isAfter(endOfMonth)))
+                .count();
+        long totalBooksOnLoan = loans.stream()
+                .filter(loan -> loan.getReturnDate() == null)
+                .count();
+        long totalOverdueBooks = loans.stream()
+                .filter(loan -> loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 21)
+                .count();
 
-        Map<String, Object> report = Map.of(
+        return Map.of(
                 "loans", loanDetails,
                 "summary", Map.of(
                         "totalBooksTakenOut", totalBooksTakenOut,
@@ -55,7 +65,6 @@ public class ReportService {
                         "totalOverdueBooks", totalOverdueBooks
                 )
         );
-
-        return report;
     }
 }
+
