@@ -2,8 +2,10 @@ package com.example.bookworm.backend.service;
 
 import com.example.bookworm.backend.dto.UserDto;
 import com.example.bookworm.backend.exception.UserNotFoundException;
+import com.example.bookworm.backend.model.Loan;
 import com.example.bookworm.backend.model.Role;
 import com.example.bookworm.backend.model.User;
+import com.example.bookworm.backend.repository.LoanRepository;
 import com.example.bookworm.backend.repository.RoleRepository;
 import com.example.bookworm.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LoanRepository loanRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -64,9 +69,9 @@ public class UserService {
         Set<Role> roles = new HashSet<>();
         roles.add(roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new IllegalArgumentException("Role not found: 'ROLE_USER")));
-                        roles.add(roleRepository.findByName("ROLE_ADMIN")
-                                .orElseThrow(() -> new IllegalArgumentException("Role not found: 'ROLE_ADMIN")));
-                                        user.setRoles(roles);
+        roles.add(roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: 'ROLE_ADMIN")));
+        user.setRoles(roles);
 
         return userRepository.save(user);
     }
@@ -91,6 +96,19 @@ public class UserService {
 
     public void deleteUser(Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+
+        // Check for active loans
+        List<Loan> activeLoans = loanRepository.findByUserIdAndReturnDateIsNull(id);
+        if (!activeLoans.isEmpty()) {
+            throw new RuntimeException("Cannot delete user with active loans.");
+        }
+
+        // Delete all loans associated with the user
+        List<Loan> loans = loanRepository.findByUserId(id);
+        for (Loan loan : loans) {
+            loanRepository.delete(loan);
+        }
+
         userRepository.delete(user);
     }
 
@@ -123,4 +141,6 @@ public class UserService {
         userRepository.save(user);
     }
 }
+
+
 

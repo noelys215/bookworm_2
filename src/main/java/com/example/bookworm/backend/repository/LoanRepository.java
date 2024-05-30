@@ -16,3 +16,6 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     // New method to find active loans by user ID
     List<Loan> findByUserIdAndReturnDateIsNull(Long userId);
 }
+
+
+

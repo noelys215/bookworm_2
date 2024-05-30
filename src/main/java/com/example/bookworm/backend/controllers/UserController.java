@@ -8,6 +8,7 @@ import com.example.bookworm.backend.repository.LoanRepository;
 import com.example.bookworm.backend.repository.UserRepository;
 import com.example.bookworm.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -69,9 +70,13 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+        try {
+            userService.deleteUser(id);
+            return ResponseEntity.noContent().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 
     @GetMapping("/email/{email}")
@@ -120,6 +125,9 @@ public class UserController {
         return loanRepository.findByUserIdAndReturnDateIsNull(user.getId());
     }
 }
+
+
+
 
 
 

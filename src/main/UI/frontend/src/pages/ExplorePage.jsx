@@ -15,6 +15,11 @@ const ExplorePage = () => {
 		try {
 			const response = await axios.get(`/api/books/search?query=${searchQuery}`);
 			setSearchResults(response.data);
+			if (response.data.length === 0) {
+				setError('No Books Found, Try Again');
+			} else {
+				setError('');
+			}
 		} catch (error) {
 			setError('Failed to search books');
 		}
@@ -61,7 +66,10 @@ const ExplorePage = () => {
 					selectedBooks={selectedBooks}
 				/>
 			) : (
-				<Books onSelectBook={handleSelectBook} selectedBooks={selectedBooks} />
+				<>
+					{searchQuery && <p>No Books Found, Try Again</p>}
+					<Books onSelectBook={handleSelectBook} selectedBooks={selectedBooks} />
+				</>
 			)}
 			{selectedBooks.length > 0 && <button onClick={handleSubmitLoans}>Submit Loans</button>}
 		</div>

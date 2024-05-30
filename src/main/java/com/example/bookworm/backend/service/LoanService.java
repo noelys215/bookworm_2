@@ -74,7 +74,7 @@ public class LoanService {
     public Loan markLoanAsLost(Long id) {
         Loan loan = getLoanById(id);
         loan.setLost(true);
-        loan.setLostDate(LocalDate.now());  // Set lost date
+        loan.setLostDate(LocalDate.now());
 
         Book book = loan.getBook();
         book.setLostQuantity(book.getLostQuantity() + 1);

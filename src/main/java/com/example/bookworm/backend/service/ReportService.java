@@ -33,7 +33,7 @@ public class ReportService {
             details.setLoanDate(loan.getLoanDate());
             details.setReturnDate(loan.getReturnDate());
             details.setLoanDuration(loan.getReturnDate() != null ? ChronoUnit.DAYS.between(loan.getLoanDate(), loan.getReturnDate()) : 0);
-            details.setOverdue(loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 21);
+            details.setOverdue(loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 14);
             details.setUserName(loan.getUser().getName());
             details.setUserEmail(loan.getUser().getEmail());
             return details;
@@ -52,7 +52,7 @@ public class ReportService {
                 .filter(loan -> loan.getReturnDate() == null)
                 .count();
         long totalOverdueBooks = loans.stream()
-                .filter(loan -> loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 21)
+                .filter(loan -> loan.getReturnDate() == null && ChronoUnit.DAYS.between(loan.getLoanDate(), LocalDate.now()) > 14)
                 .count();
 
         return Map.of(
