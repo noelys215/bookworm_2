@@ -50,14 +50,17 @@ const UserManagement = () => {
 	};
 
 	const handleAssignAdmin = async (userEmail) => {
-		try {
-			await axios.post('/api/users/assign-role', {
-				email: userEmail,
-				roleName: 'ROLE_ADMIN',
-			});
-			alert('Admin role assigned successfully');
-		} catch (error) {
-			console.error('Failed to assign admin role:', error);
+		if (window.confirm('Are you sure you want to assign this user as admin?')) {
+			try {
+				await axios.post('/api/users/assign-role', {
+					email: userEmail,
+					roleName: 'ROLE_ADMIN',
+				});
+				alert('Admin role assigned successfully');
+			} catch (error) {
+				console.error('Failed to assign admin role:', error);
+				alert('Failed to assign admin role');
+			}
 		}
 	};
 

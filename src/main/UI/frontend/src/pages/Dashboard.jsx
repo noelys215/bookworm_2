@@ -4,6 +4,7 @@ import UserService from '../services/UserService';
 import Logout from '../components/Logout';
 import BackToExploreButton from '../components/BackToExploreButton';
 import axios from '../utils/axiosConfig.js';
+import BackToAdminButton from '../components/BackToAdminButton.jsx';
 
 const Dashboard = () => {
 	const [userDetails, setUserDetails] = useState({});
@@ -89,6 +90,7 @@ const Dashboard = () => {
 			<h2>Dashboard</h2>
 			<BackToExploreButton />
 			<Logout />
+			<BackToAdminButton />
 			{error && <p>{error}</p>}
 			<form onSubmit={handleSubmit}>
 				<h3>User Details</h3>

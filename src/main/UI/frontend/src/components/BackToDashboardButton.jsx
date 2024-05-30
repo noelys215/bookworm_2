@@ -4,6 +4,7 @@ import axios from '../utils/axiosConfig.js';
 
 const BackToDashboardButton = () => {
 	const navigate = useNavigate();
+	// eslint-disable-next-line no-unused-vars
 	const [isAdmin, setIsAdmin] = useState(false);
 
 	useEffect(() => {
@@ -23,11 +24,11 @@ const BackToDashboardButton = () => {
 	}, []);
 
 	const handleBackToDashboard = () => {
-		if (isAdmin) {
-			navigate('/admin-dashboard');
-		} else {
-			navigate('/dashboard');
-		}
+		// if (isAdmin) {
+		// 	navigate('/admin-dashboard');
+		// } else {
+		navigate('/dashboard');
+		// }
 	};
 
 	return <button onClick={handleBackToDashboard}>Back to Dashboard</button>;
