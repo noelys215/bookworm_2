@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import axios from '../utils/axiosConfig.js';
+import { Tab } from '@mui/material';
 
 const Logout = () => {
 	const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Logout = () => {
 		}
 	};
 
-	return <button onClick={handleLogout}>Logout</button>;
+	return <Tab onClick={handleLogout} label="Logout" />;
 };
 
 export default Logout;

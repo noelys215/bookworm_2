@@ -10,6 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.5",
+    "@fontsource-variable/open-sans": "^5.0.29",
+    "@fontsource/roboto": "^5.0.13",
+    "@fontsource/yeseva-one": "^5.0.20",
+    "@mui/icons-material": "^5.15.19",
+    "@mui/material": "^5.15.19",
     "axios": "^1.7.2",
     "date-fns": "^3.6.0",
     "js-cookie": "^3.0.5",

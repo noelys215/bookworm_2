@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from '../utils/axiosConfig';
+import { Tab } from '@mui/material';
 
 const BackToAdminButton = () => {
 	const navigate = useNavigate();
@@ -26,7 +27,7 @@ const BackToAdminButton = () => {
 		return null;
 	}
 
-	return <button onClick={() => navigate('/admin-dashboard')}>Back to Admin Dashboard</button>;
+	return <Tab onClick={() => navigate('/admin-dashboard')} label="Admin Dashboard" />;
 };
 
 export default BackToAdminButton;

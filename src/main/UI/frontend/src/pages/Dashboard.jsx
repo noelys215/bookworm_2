@@ -1,12 +1,15 @@
+/* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
-import Logout from '../components/Logout';
-import BackToExploreButton from '../components/BackToExploreButton';
 import axios from '../utils/axiosConfig.js';
-import BackToAdminButton from '../components/BackToAdminButton.jsx';
+import Layout from '../layouts/Layout.jsx';
+import UserForm from '../components/UserForm';
+import LoansTable from '../components/LoansTable';
+import { Typography, Alert } from '@mui/material';
+import '@fontsource-variable/open-sans';
 
-const Dashboard = () => {
+const Dashboard = ({ title }) => {
 	const [userDetails, setUserDetails] = useState({});
 	const [userLoans, setUserLoans] = useState([]);
 	const [password, setPassword] = useState('');
@@ -59,26 +62,26 @@ const Dashboard = () => {
 		}
 	};
 
-	const handleReturnBook = async (loanId) => {
+	const handleReturnBook = async (loan) => {
 		const confirmReturn = window.confirm('Are you sure you want to return this book?');
 		if (confirmReturn) {
 			try {
-				await axios.put(`/api/loans/return/${loanId}`);
+				await axios.put(`/api/loans/return/${loan.id}`);
 				alert('Book returned successfully');
-				setUserLoans(userLoans.filter((loan) => loan.id !== loanId));
+				setUserLoans(userLoans.filter((l) => l.id !== loan.id));
 			} catch (error) {
 				setError('Failed to return the book.');
 			}
 		}
 	};
 
-	const handleMarkLost = async (loanId) => {
+	const handleMarkLost = async (loan) => {
 		const confirmLost = window.confirm('Are you sure you want to report this book as lost?');
 		if (confirmLost) {
 			try {
-				await axios.put(`/api/loans/mark-lost/${loanId}`);
+				await axios.put(`/api/loans/mark-lost/${loan.id}`);
 				alert('Book marked as lost');
-				setUserLoans(userLoans.filter((loan) => loan.id !== loanId));
+				setUserLoans(userLoans.filter((l) => l.id !== loan.id));
 			} catch (error) {
 				setError('Failed to mark the book as lost.');
 			}
@@ -86,64 +89,30 @@ const Dashboard = () => {
 	};
 
 	return (
-		<div>
-			<h2>Dashboard</h2>
-			<BackToExploreButton />
-			<Logout />
-			<BackToAdminButton />
-			{error && <p>{error}</p>}
-			<form onSubmit={handleSubmit}>
-				<h3>User Details</h3>
-				<input
-					type="text"
-					name="name"
-					placeholder="Name"
-					value={userDetails.name || ''}
-					onChange={handleChange}
-					required
-				/>
-				<input
-					type="email"
-					name="email"
-					placeholder="Email"
-					value={userDetails.email || ''}
-					onChange={handleChange}
-					required
-				/>
-				<button type="submit">Update Details</button>
-			</form>
-			<form onSubmit={handlePasswordSubmit}>
-				<h3>Change Password</h3>
-				<input
-					type="password"
-					name="password"
-					placeholder="New Password"
-					value={password}
-					onChange={handlePasswordChange}
-					required
-				/>
-				<button type="submit">Update Password</button>
-			</form>
-			<h3>Loans</h3>
-			{userLoans.length > 0 ? (
-				<ul>
-					{userLoans.map((loan) => (
-						<li key={loan.id}>
-							<p>
-								Book: {loan.book.title} by {loan.book.author}
-							</p>
-							<p>Loan Date: {loan.loanDate}</p>
-							<p>Return Date: {loan.returnDate || 'Not returned yet'}</p>
-							<p>Overdue: {loan.isOverdue ? 'Yes' : 'No'}</p>
-							<button onClick={() => handleReturnBook(loan.id)}>Return Book</button>
-							<button onClick={() => handleMarkLost(loan.id)}>Report Lost</button>
-						</li>
-					))}
-				</ul>
-			) : (
-				<p>No loans found.</p>
-			)}
-		</div>
+		<Layout title={'Dashboard'}>
+			<Typography variant="h2">{title}</Typography>
+
+			{error && <Alert severity="error">{error}</Alert>}
+
+			<UserForm
+				formTitle="User Details"
+				userDetails={userDetails}
+				handleChange={handleChange}
+				handleSubmit={handleSubmit}
+				buttonLabel="Update Details"
+				password={password}
+				handlePasswordChange={handlePasswordChange}
+				handlePasswordSubmit={handlePasswordSubmit}
+				passwordButtonLabel="Update Password"
+			/>
+
+			<LoansTable
+				title={'Loans'}
+				loans={userLoans}
+				handleReturnBook={handleReturnBook}
+				handleMarkLost={handleMarkLost}
+			/>
+		</Layout>
 	);
 };
 

@@ -1,3 +1,4 @@
+import { Tab } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const BackToExploreButton = () => {
@@ -5,7 +6,7 @@ const BackToExploreButton = () => {
 
 	const goToExplorePage = () => navigate('/explore');
 
-	return <button onClick={goToExplorePage}>Explore Books</button>;
+	return <Tab onClick={goToExplorePage} label="Explore Books" />;
 };
 
 export default BackToExploreButton;

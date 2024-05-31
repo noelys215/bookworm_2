@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import axios from '../utils/axiosConfig.js';
+import { Tab } from '@mui/material';
 
 const BackToDashboardButton = () => {
 	const navigate = useNavigate();
@@ -31,7 +32,7 @@ const BackToDashboardButton = () => {
 		// }
 	};
 
-	return <button onClick={handleBackToDashboard}>Back to Dashboard</button>;
+	return <Tab onClick={handleBackToDashboard} label="User Dashboard" />;
 };
 
 export default BackToDashboardButton;
