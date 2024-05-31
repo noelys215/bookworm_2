@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import axios from '../utils/axiosConfig.js';
+import Layout from '../layouts/Layout.jsx';
+import BooksTable from '../components/BooksTable.jsx';
 import Books from '../components/Books.jsx';
-import SearchedBooks from '../components/SearchedBooks.jsx';
-import BackToDashboardButton from '../components/BackToDashboardButton.jsx';
+import { TextField, Button, Box, Typography, Alert } from '@mui/material';
 
 const ExplorePage = () => {
 	const [searchQuery, setSearchQuery] = useState('');
@@ -46,33 +47,56 @@ const ExplorePage = () => {
 	};
 
 	return (
-		<div>
-			<h2>Explore Books</h2>
-			<BackToDashboardButton />
-			<form onSubmit={handleSearch}>
-				<input
+		<Layout title={'Explore Books'}>
+			<Box
+				component="form"
+				onSubmit={handleSearch}
+				sx={{
+					display: 'flex',
+					justifyContent: 'center',
+					alignItems: 'center',
+					mt: 3,
+					mb: 3,
+				}}>
+				<TextField
 					type="text"
 					value={searchQuery}
 					onChange={(e) => setSearchQuery(e.target.value)}
 					placeholder="Search by title, author, or genre"
+					variant="outlined"
+					sx={{ mr: 2, width: { xs: '100%', sm: 'auto', md: '50%' } }}
 				/>
-				<button type="submit">Search</button>
-			</form>
-			{error && <p style={{ color: 'red' }}>{error}</p>}
+				<Button type="submit" variant="contained" color="primary">
+					Search
+				</Button>
+			</Box>
+			{error && (
+				<Alert severity="error" sx={{ textAlign: 'center' }}>
+					{error}
+				</Alert>
+			)}
 			{searchResults.length > 0 ? (
-				<SearchedBooks
+				<BooksTable
 					books={searchResults}
 					onSelectBook={handleSelectBook}
 					selectedBooks={selectedBooks}
 				/>
 			) : (
 				<>
-					{searchQuery && <p>No Books Found, Try Again</p>}
+					{searchQuery && (
+						<Typography align="center">No Books Found, Try Again</Typography>
+					)}
 					<Books onSelectBook={handleSelectBook} selectedBooks={selectedBooks} />
 				</>
 			)}
-			{selectedBooks.length > 0 && <button onClick={handleSubmitLoans}>Submit Loans</button>}
-		</div>
+			{selectedBooks.length > 0 && (
+				<Box sx={{ display: 'flex', justifyContent: 'center', mt: 1, mb: 3 }}>
+					<Button onClick={handleSubmitLoans} variant="contained" color="primary">
+						Submit Loans
+					</Button>
+				</Box>
+			)}
+		</Layout>
 	);
 };
 

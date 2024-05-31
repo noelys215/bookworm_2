@@ -68,6 +68,7 @@ const Layout = ({ children, title }) => {
 				maxWidth="xl"
 				sx={{
 					backgroundColor: '#F9F6EE',
+					overflow: 'auto',
 					borderRadius: { xs: 0, md: 2 },
 					width: { xs: '100%', md: '70vw' },
 					height: { xs: '100%', md: 'auto' },

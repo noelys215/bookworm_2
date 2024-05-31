@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import { useState, useEffect } from 'react';
 import axios from '../utils/axiosConfig';
+import BooksTable from './BooksTable';
+import { Box, Button, Chip, Divider } from '@mui/material';
 
 const Books = ({ onSelectBook, selectedBooks }) => {
 	const [books, setBooks] = useState([]);
@@ -25,32 +27,24 @@ const Books = ({ onSelectBook, selectedBooks }) => {
 
 	return (
 		<div>
-			<h3>All Books</h3>
+			<Divider variant="middle">
+				<Chip
+					label="All Books"
+					sx={{
+						fontSize: '1.1rem',
+						mb: 1,
+						fontFamily: 'Open Sans Variable',
+					}}
+				/>
+			</Divider>
 			{error && <p style={{ color: 'red' }}>{error}</p>}
-			<ul>
-				{books.map((book) => (
-					<li key={book.id}>
-						<p>Title: {book.title}</p>
-						<p>Author: {book.author}</p>
-						<p>Year: {book.year}</p>
-						<p>Genre: {book.genre}</p>
-						<p>ISBN: {book.isbn}</p>
-						<p>Quantity Available: {book.quantity}</p>
-						<label>
-							<input
-								type="checkbox"
-								checked={selectedBooks.includes(book.id)}
-								onChange={() => onSelectBook(book.id)}
-							/>
-							Select for loan
-						</label>
-					</li>
-				))}
-			</ul>
-			<button onClick={handlePreviousPage} disabled={page === 0}>
-				Previous
-			</button>
-			<button onClick={handleNextPage}>Next</button>
+			<BooksTable books={books} onSelectBook={onSelectBook} selectedBooks={selectedBooks} />
+			<Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+				<Button onClick={handlePreviousPage} disabled={page === 0}>
+					Previous
+				</Button>
+				<Button onClick={handleNextPage}>Next</Button>
+			</Box>
 		</div>
 	);
 };

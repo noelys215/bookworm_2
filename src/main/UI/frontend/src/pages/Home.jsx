@@ -1,18 +1,23 @@
-import { useState } from 'react';
-import Login from '../components/Login';
-import SignUp from '../components/Signup';
+import { Box, Container, Typography } from '@mui/material';
+import AuthForm from '../components/AuthForm';
+import '@fontsource-variable/open-sans';
 
 const Home = () => {
-	const [isSignUp, setIsSignUp] = useState(false);
-
 	return (
-		<div>
-			<h1>Welcome to Bookworm Base</h1>
-			{isSignUp ? <SignUp /> : <Login />}
-			<button onClick={() => setIsSignUp(!isSignUp)}>
-				{isSignUp ? 'Already have an account? Sign In' : 'New here? Sign Up'}
-			</button>
-		</div>
+		<Container component="main" maxWidth="xs">
+			<Box
+				sx={{
+					marginTop: 8,
+					display: 'flex',
+					flexDirection: 'column',
+					alignItems: 'center',
+				}}>
+				<Typography component="h1" variant="h5" fontFamily={'Open Sans Variable'}>
+					Welcome to Bookworm Base
+				</Typography>
+				<AuthForm />
+			</Box>
+		</Container>
 	);
 };
 
