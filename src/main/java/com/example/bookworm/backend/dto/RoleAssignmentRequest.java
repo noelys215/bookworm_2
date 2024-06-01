@@ -19,4 +19,6 @@ public class RoleAssignmentRequest {
     public void setRoleName(String roleName) {
         this.roleName = roleName;
     }
+
+
 }

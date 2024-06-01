@@ -18,9 +18,8 @@ const BooksTable = ({ books, onSelectBook, selectedBooks }) => {
 	const theme = useTheme();
 	const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 	console.log(books);
-
 	return (
-		<Box sx={{ width: '100%', height: '100%', overflow: 'auto' }}>
+		<Box sx={{ width: '100%', height: '755px', overflow: 'auto' }}>
 			{books.length > 0 ? (
 				isMobile ? (
 					<Box>

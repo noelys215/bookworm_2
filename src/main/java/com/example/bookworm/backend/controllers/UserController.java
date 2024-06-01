@@ -42,6 +42,15 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    // New endpoint to remove the admin role
+
+    @PostMapping("/remove-role")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<?> removeRoleFromUser(@RequestBody RoleAssignmentRequest request) {
+        userService.removeRoleFromUser(request.getEmail(), request.getRoleName());
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User createdUser = userService.createUser(user);
@@ -50,8 +59,8 @@ public class UserController {
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<User>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
+    public ResponseEntity<List<UserDto>> getAllUsers() {
+        List<UserDto> users = userService.getAllUsers();
         return ResponseEntity.ok(users);
     }
 

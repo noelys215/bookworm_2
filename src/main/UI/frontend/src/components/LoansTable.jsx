@@ -121,7 +121,7 @@ const LoansTable = ({ title, loans, handleReturnBook, handleMarkLost }) => {
 					</TableContainer>
 				)
 			) : (
-				<Typography>No loans found.</Typography>
+				<Typography textAlign={'center'}>No loans found.</Typography>
 			)}
 		</Box>
 	);

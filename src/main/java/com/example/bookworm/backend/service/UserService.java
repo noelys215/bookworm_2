@@ -44,6 +44,33 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void removeRoleFromUser(String email, String roleName) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+
+        Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleName));
+
+        user.getRoles().remove(role);
+        userRepository.save(user);
+    }
+
+//    public void removeAdminRoleFromUser(String email) {
+//        User user = userRepository.findByEmail(email)
+//                .orElseThrow(() -> new UserNotFoundException("User not found with email: " + email));
+//
+//        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+//                .orElseThrow(() -> new IllegalArgumentException("Role not found: ROLE_ADMIN"));
+//
+//        if (user.getRoles().contains(adminRole)) {
+//            user.getRoles().remove(adminRole);
+//            userRepository.save(user);
+//        } else {
+//            throw new RuntimeException("User does not have admin role");
+//        }
+//    }
+
+
     public User createUser(User user) {
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Email is already registered: " + user.getEmail());
@@ -76,8 +103,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+//    public List<User> getAllUsers() {
+//        return userRepository.findAll();
+//    }
+
+    public List<UserDto> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserDto(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        user.getRoles().stream().map(Role::getName).collect(Collectors.toSet())
+                ))
+                .collect(Collectors.toList());
     }
 
     public User getUserById(Long id) {

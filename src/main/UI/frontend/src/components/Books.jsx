@@ -8,12 +8,14 @@ const Books = ({ onSelectBook, selectedBooks }) => {
 	const [books, setBooks] = useState([]);
 	const [error, setError] = useState('');
 	const [page, setPage] = useState(0);
+	const [totalPages, setTotalPages] = useState(0);
 
 	useEffect(() => {
 		const fetchBooks = async () => {
 			try {
 				const response = await axios.get(`/api/books?page=${page}&size=10`);
 				setBooks(response.data.content);
+				setTotalPages(response.data.totalPages); // Assuming your API returns totalPages
 			} catch (error) {
 				setError('Failed to fetch books');
 			}
@@ -43,7 +45,9 @@ const Books = ({ onSelectBook, selectedBooks }) => {
 				<Button onClick={handlePreviousPage} disabled={page === 0}>
 					Previous
 				</Button>
-				<Button onClick={handleNextPage}>Next</Button>
+				<Button onClick={handleNextPage} disabled={page >= totalPages - 1}>
+					Next
+				</Button>
 			</Box>
 		</div>
 	);

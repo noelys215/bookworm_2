@@ -6,14 +6,14 @@ public class UserDto {
     private Long id;
     private String name;
     private String email;
-    private Set<String> roles; // Added roles
+    private Set<String> roles;
 
     // Constructor
     public UserDto(Long id, String name, String email, Set<String> roles) { // Updated constructor
         this.id = id;
         this.name = name;
         this.email = email;
-        this.roles = roles; // Set roles
+        this.roles = roles;
     }
 
     // Getters and Setters
