@@ -1,7 +1,7 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import {
 	Box,
-	Button,
 	Paper,
 	Table,
 	TableBody,
@@ -50,12 +50,12 @@ const MonthlyReportTable = ({ loans, deleteLoan }) => {
 										justifyContent: 'space-between',
 										mt: 2,
 									}}>
-									<Button
+									{/* <Button
 										variant="contained"
 										color="secondary"
 										onClick={() => deleteLoan(loan.id)}>
 										Delete
-									</Button>
+									</Button> */}
 								</Box>
 							</Paper>
 						))}
@@ -91,14 +91,14 @@ const MonthlyReportTable = ({ loans, deleteLoan }) => {
 											{loan.userName} ({loan.userEmail})
 										</TableCell>
 										<TableCell>{loan.overdue ? 'Yes' : 'No'}</TableCell>
-										<TableCell align="center">
+										{/* <TableCell align="center">
 											<Button
 												variant="contained"
 												color="secondary"
 												onClick={() => deleteLoan(loan.id)}>
 												Delete
 											</Button>
-										</TableCell>
+										</TableCell> */}
 									</TableRow>
 								))}
 							</TableBody>
