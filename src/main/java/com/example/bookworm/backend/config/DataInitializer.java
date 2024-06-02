@@ -60,19 +60,19 @@ public class DataInitializer implements CommandLineRunner {
         roleRepository.saveAll(List.of(adminRole, userRole));
 
         // Create users
-        User admin = new User("Admin", "admin@example.com", passwordEncoder.encode("admin123"));
+        User admin = new User("Admin", "admin@bookworm.edu", passwordEncoder.encode("admin123"));
         admin.setRoles(new HashSet<>(Set.of(adminRole, userRole)));
 
-        User regularUser1 = new User("User1", "user1@example.com", passwordEncoder.encode("user123"));
+        User regularUser1 = new User("Jimmy Hopkins", "jimmy@bookworm.edu", passwordEncoder.encode("user123"));
         regularUser1.setRoles(new HashSet<>(Set.of(userRole)));
 
-        User regularUser2 = new User("User2", "user2@example.com", passwordEncoder.encode("user123"));
+        User regularUser2 = new User("Gary Smith", "gary@bookworm.edu", passwordEncoder.encode("user123"));
         regularUser2.setRoles(new HashSet<>(Set.of(userRole)));
 
-        User regularUser3 = new User("User3", "user3@example.com", passwordEncoder.encode("user123"));
+        User regularUser3 = new User("Melody Adams", "melody@bookworm.edu", passwordEncoder.encode("user123"));
         regularUser3.setRoles(new HashSet<>(Set.of(userRole)));
 
-        User regularUser4 = new User("User4", "user4@example.com", passwordEncoder.encode("user123"));
+        User regularUser4 = new User("Lola Lombardi", "lola@bookworm.edu", passwordEncoder.encode("user123"));
         regularUser4.setRoles(new HashSet<>(Set.of(userRole)));
 
         userRepository.saveAll(List.of(admin, regularUser1, regularUser2, regularUser3, regularUser4));

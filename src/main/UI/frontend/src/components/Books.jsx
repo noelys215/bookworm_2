@@ -15,7 +15,7 @@ const Books = ({ onSelectBook, selectedBooks }) => {
 			try {
 				const response = await axios.get(`/api/books?page=${page}&size=10`);
 				setBooks(response.data.content);
-				setTotalPages(response.data.totalPages); // Assuming your API returns totalPages
+				setTotalPages(response.data.totalPages);
 			} catch (error) {
 				setError('Failed to fetch books');
 			}
